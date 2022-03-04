@@ -18,7 +18,7 @@ module.exports = {
 				return
         */
        const sharkdb = util.apis["shark-db-db"].api;
-       const admins = util.apis["shark-admins-admin"].api;
+       const sperms = util.apis["shark-perms-manager"].api;
        
     }
 }

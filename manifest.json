@@ -1,14 +1,14 @@
 {
-    "name": "shark-admins",
+    "name": "shark-perms",
     "version": "1.0.0",
     "author": "Skelly",
     "original_pain_version": "1.0.0",
     "min_pain_version": "1.0.0",
     "apis": {
-        "admin": "src/api.js"
+        "manager": "src/api.js"
     },
     "entrypoints": {
-        "admin": "src/admin.js"
+        "perm": "src/perm.js"
     },
     "module_dependencies": [
         "shark-db"

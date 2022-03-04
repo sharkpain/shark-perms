@@ -1,5 +1,5 @@
 {
-  "name": "shark-admins",
+  "name": "shark-perms",
   "version": "1.0.0",
   "description": "permission managememnt for sharkofbot painfull edition",
   "main": "src/index.js",
@@ -7,11 +7,11 @@
   "min_pain_version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sharkpain/shark-admins.git"
+    "url": "git+https://github.com/sharkpain/shark-perms.git"
   },
   "author": "Skelly",
   "license": "UNLICENCED",
   "bugs": {
-    "url": "https://github.com/sharkpain/shark-admins/issues"
+    "url": "https://github.com/sharkpain/shark-perms/issues"
   }
 }
