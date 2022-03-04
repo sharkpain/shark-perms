@@ -22,7 +22,7 @@ module.exports = {
        switch(args[0]) {
 		   case 'myperms':
 			   sharkdb.getUser(message.author.id, user => {
-				   message.channel.send(user.permissions)
+				   message.channel.send(JSON.stringify(user.permissions))
 			   })
 			   break;
 			default:
