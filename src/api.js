@@ -19,14 +19,21 @@ function permittedTo(permId, discordId, guildId, cb) {
         let ugi = userGroups.map(g => g.id);
         sharkdb.getGroups(ugi, groups => {
             if (!groups) return cb(false);
+            let gp = false
             groups.forEach(group => {
                 let GPerm = group.permissions.filter(p => p.id == permId)[0];
                 if (GPerm) {
-                    if (GPerm.global) return cb(true);
-                    if (GPerm.guildOnly.includes(guildId)) return cb(true);
+                    if (GPerm.global) {
+                        gp = true
+                        return cb(true);
+                    }
+                    if (GPerm.guildOnly.includes(guildId)) {
+                        gp = true
+                        return cb(true);
+                    }
                 }
             })
-            return cb(false)
+            if (!gp) return cb(false)
         })
     })
 }
