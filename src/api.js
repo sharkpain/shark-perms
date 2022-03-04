@@ -4,6 +4,7 @@ const sharkdb = apis["shark-db-db"].api;
 function permittedTo(permId, discordId, guildId, cb) {
     //see howthefuckitworks.png for reference
     sharkdb.getUser(discordId, user => {
+        if (!user) return cb(false);
         let APerm = user.permissions.permissions.filter(p => p.id == "superhyperadmin")[0];
         if (APerm) {
             if (APerm.global) return cb(true);
