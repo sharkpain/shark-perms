@@ -19,6 +19,14 @@ module.exports = {
         */
        const sharkdb = util.apis["shark-db-db"].api;
        const sperms = util.apis["shark-perms-manager"].api;
-       
+       switch(args[0]) {
+		   case 'myperms':
+			   sharkdb.getUser(message.author.id, user => {
+				   message.channel.send(user.permissions)
+			   })
+			   break;
+			default:
+				message.channel.send("potato man")
+	   }
     }
 }
