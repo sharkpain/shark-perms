@@ -26,7 +26,10 @@ module.exports = {
 			   })
 			   break;
 			default:
-				message.channel.send("potato man")
+				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
+					if(!permitted) return message.channel.send("you not allowed idiot");
+					message.channel.send("you have perm epic man")
+				});
 	   }
     }
 }
