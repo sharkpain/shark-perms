@@ -51,6 +51,7 @@ module.exports = {
 								permObject.permissions.permissions[index].global = value == "true";
 							}
 							if (!isUser) {
+								if (perm == "superhyperadmin") message.channel.send("that doesnt do anything but ok");
 								let index = permObject.permissions.findIndex(p => p.id == perm);
 								permObject.permissions[index].global = value == "true";
 							}
@@ -88,9 +89,9 @@ module.exports = {
 				   .setColor("#00A8F3")
 				   .setTitle(`${message.author.username}'s permissions`)
 				   .addFields(
-					user.permissions.permissions.filter(p => p?.global).length > 0 ? { name: 'Global Permissions', value: user.permissions.permissions.filter(p => p?.global).map(p => p.id).join(', ') } : { name: 'Global Permissions', value: "none lol" }, 
-					user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id) && !p?.global).length > 0 ? { name: 'Guild Permissions', value: user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id) && !p?.global).map(p => p.id).join(', ') } : { name: 'Guild Permissions', value: "none lol" },
-					user.permissions.groups.length > 0 ? { name: 'Groups', value: user.permissions.groups.map(g => g?.name).join(', ') } : { name: 'Groups', value: "none lol" }
+						user.permissions.permissions.filter(p => p?.global).length > 0 ? { name: 'Global Permissions', value: user.permissions.permissions.filter(p => p?.global).map(p => p.id).join(', ') } : { name: 'Global Permissions', value: "none lol" }, 
+						user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id) && !p?.global).length > 0 ? { name: 'Guild Permissions', value: user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id) && !p?.global).map(p => p.id).join(', ') } : { name: 'Guild Permissions', value: "none lol" },
+						user.permissions.groups.length > 0 ? { name: 'Groups', value: user.permissions.groups.map(g => g?.name).join(', ') } : { name: 'Groups', value: "none lol" }
 				   )
 				   .setTimestamp()
 				   .setFooter({text:"shark-perms-manager copyright 2023 urmom reserved", iconURL: "https://cdn.discordapp.com/avatars/585121910388424724/47ceb1466c5bd0648487c784d394cbfd.webp"});
