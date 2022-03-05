@@ -11,10 +11,11 @@ module.exports = {
 					sharkdb.createGroup(args[1], group => {
 						if (group == "ERR_BLACKLISTED") return message.channel.send("group name is blacklisted");
 						if (group == "ERR_INUSE") return message.channel.send("group name is already taken");
+						if (group == "ERR_DBFAIL") return message.channel.send("something broke");
 						let groupEmbed = new MessageEmbed()
 						.setColor("#00A8F3")
 						.setTitle(`${args[1]}`)
-						.setDescription(`created group ${group.name} with id ${group.id}`)
+						.setDescription(`created group ${group.name} with id ${group._id}`)
 						.setFooter({text: `created by ${message.author.tag}`});
 						message.channel.send({embeds: [groupEmbed]});
 					})
