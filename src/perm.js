@@ -4,7 +4,7 @@ module.exports = {
        const sharkdb = util.apis["shark-db-db"].api;
        const sperms = util.apis["shark-perms-manager"].api;
        switch(args[0]) {
-		   case 'creategroup':
+		    case 'creategroup':
 				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
 					if(!permitted) return message.channel.send("you not allowed idiot");
 					if(!args[1]) return message.channel.send("specify group name, usage: perm creategroup [group name]");
@@ -21,6 +21,67 @@ module.exports = {
 					})
 				});
 			   break;
+			case 'setperm':
+				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
+					if(!permitted) return message.channel.send("you not allowed idiot");
+					if(!args[1] || !args[2] || !args[3] || !args[4] || !args[5]) return message.channel.send("user or group and permission and what to do with it, \nusage: perm setperm [user/group] [user id/group name] [permission] [global/guild] [true/false]");
+					let wtf = args.map((arg, i) => `${i}: ${arg}`).join('\n');
+					let subject = args[1],
+						id = args[2],
+						perm = args[3],
+						scope = args[4],
+						value = args[5];
+					if (!["user", "group"].includes(subject)) return message.channel.send("subject must be either user or group");
+					if (subject == "user" && !/^[0-9]{18,19}$/gm.test(id)) return message.channel.send("use user id please");
+					if (!["guild", "global"].includes(scope)) return message.channel.send("scope go either global or guild (will use the guild you are in)");
+					if (!["false", "true"].includes(value)) return message.channel.send("value go either true or false");
+					sperms.permissionObject(subject, id, permObject => {
+						if (!permObject) return message.channel.send("user or group not found (or database error) \n make sure the user has used the bot before, or that the group exists");
+						let isUser = subject == "user";
+						let needCreation = false
+						if(isUser && permObject.permissions.permissions.filter(p => p.id == perm).length < 1) needCreation = true
+						if(!isUser && permObject.permissions.filter(p => p.id == perm).length < 1) needCreation = true
+						console.log(needCreation)
+						if(needCreation) {
+							console.log("here")
+							if (isUser) permObject.permissions.permissions.push({id: perm, global: false, guildOnly: []});
+							if (!isUser) permObject.permissions.push({id: perm, global: false, guildOnly: []});
+						}
+						if (scope == "global") {
+							if (isUser) {
+								let index = permObject.permissions.permissions.findIndex(p => p.id == perm);
+								permObject.permissions.permissions[index].global = value == "true";
+							}
+							if (!isUser) {
+								let index = permObject.permissions.findIndex(p => p.id == perm);
+								permObject.permissions[index].global = value == "true";
+							}
+						}
+						if (scope == "guild") {
+							if (isUser) {
+								let index = permObject.permissions.permissions.findIndex(p => p.id == perm);
+								let desiredValue = value == "true"
+								if (desiredValue && !permObject.permissions.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions.permissions[index].guildOnly.push(message.guild.id);
+								if (!desiredValue && permObject.permissions.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions.permissions[index].guildOnly.splice(permObject.permissions.permissions[index].guildOnly.indexOf(message.guild.id), 1);
+							}
+							if (!isUser) {
+								let index = permObject.permissions.findIndex(p => p.id == perm);
+								let desiredValue = value == "true"
+								if (desiredValue && !permObject.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions[index].guildOnly.push(message.guild.id);
+								if (!desiredValue && permObject.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions[index].guildOnly.splice(permObject.permissions[index].guildOnly.indexOf(message.guild.id), 1);
+							}
+						}
+						permObject.markModified("permissions");
+						permObject.save(err => {
+							if (err) {
+								util.apis["core-error"].api.error(err);
+								return message.channel.send("something broke")
+							}
+							return message.channel.send("permission set")
+						})
+					})
+				});
+				break;
 			default:
 				sharkdb.getUser(message.author.id, user => {
 					if (!user) return this.execute(message, args, util);

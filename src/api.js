@@ -64,7 +64,25 @@ function permittedTo(permId, discordId, guildId, cb) {
     })
 }
 
+function permissionObject(subject, id, cb) {
+    switch (subject) {
+        case "user":
+            sharkdb.getUser(id, user => {
+                console.log(user)
+                if (!user) return cb(false);
+                cb(user);
+            })
+            break;
+        case "group":
+            sharkdb.getGroup(id, group => {
+                if (!group) return cb(false);
+                cb(group);
+            })
+            break;
+    }
+}
+
 module.exports = {
-    api: {permittedTo},
+    api: {permittedTo, permissionObject},
     pstates
 }
