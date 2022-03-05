@@ -4,10 +4,20 @@ module.exports = {
        const sharkdb = util.apis["shark-db-db"].api;
        const sperms = util.apis["shark-perms-manager"].api;
        switch(args[0]) {
-		   case 'myperms':
+		   case 'creategroup':
 				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
 					if(!permitted) return message.channel.send("you not allowed idiot");
-					message.channel.send("you have perm epic man")
+					if(!args[1]) return message.channel.send("specify group name, usage: perm creategroup [group name]");
+					sharkdb.createGroup(args[1], group => {
+						if (group == "ERR_BLACKLISTED") return message.channel.send("group name is blacklisted");
+						if (group == "ERR_INUSE") return message.channel.send("group name is already taken");
+						let groupEmbed = new MessageEmbed()
+						.setColor("#00A8F3")
+						.setTitle(`${args[1]}`)
+						.setDescription(`created group ${group.name} with id ${group.id}`)
+						.setFooter({text: `created by ${message.author.tag}`});
+						message.channel.send({embeds: [groupEmbed]});
+					})
 				});
 			   break;
 			default:
