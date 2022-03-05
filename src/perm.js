@@ -41,9 +41,7 @@ module.exports = {
 						let needCreation = false
 						if(isUser && permObject.permissions.permissions.filter(p => p.id == perm).length < 1) needCreation = true
 						if(!isUser && permObject.permissions.filter(p => p.id == perm).length < 1) needCreation = true
-						console.log(needCreation)
 						if(needCreation) {
-							console.log("here")
 							if (isUser) permObject.permissions.permissions.push({id: perm, global: false, guildOnly: []});
 							if (!isUser) permObject.permissions.push({id: perm, global: false, guildOnly: []});
 						}
@@ -65,6 +63,7 @@ module.exports = {
 								if (!desiredValue && permObject.permissions.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions.permissions[index].guildOnly.splice(permObject.permissions.permissions[index].guildOnly.indexOf(message.guild.id), 1);
 							}
 							if (!isUser) {
+								if (perm == "superhyperadmin") message.channel.send("that doesnt do anything but ok");
 								let index = permObject.permissions.findIndex(p => p.id == perm);
 								let desiredValue = value == "true"
 								if (desiredValue && !permObject.permissions[index].guildOnly.includes(message.guild.id)) permObject.permissions[index].guildOnly.push(message.guild.id);

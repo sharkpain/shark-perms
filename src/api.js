@@ -68,7 +68,6 @@ function permissionObject(subject, id, cb) {
     switch (subject) {
         case "user":
             sharkdb.getUser(id, user => {
-                console.log(user)
                 if (!user) return cb(false);
                 cb(user);
             })
