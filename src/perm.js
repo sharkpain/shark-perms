@@ -11,9 +11,9 @@ module.exports = {
 				   .setColor("#00A8F3")
 				   .setTitle(`${message.author.username}'s permissions`)
 				   .addFields(
-					   { name: 'Global Permissions', value: user.permissions.permissions.filter(p => p?.global).map(p => p.name).join(', ') },
-					   { name: 'Guild Permissions', value: user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id)).map(p => p.name).join(', ') },
-					   { name: 'Groups', value: user.permissions.groups.map(g => g?.name).join(', ') }
+					user.permissions.permissions.filter(p => p?.global).length > 0 ? { name: 'Global Permissions', value: user.permissions.permissions.filter(p => p?.global).map(p => p.id).join(', ') } : { name: 'Global Permissions', value: "none lol" }, 
+					user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id)).length > 0 ? { name: 'Guild Permissions', value: user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id)).map(p => p.id).join(', ') } : { name: 'Guild Permissions', value: "none lol" },
+					user.permissions.groups.length > 0 ? { name: 'Groups', value: user.permissions.groups.map(g => g?.name).join(', ') } : { name: 'Groups', value: "none lol" }
 				   )
 				   .setTimestamp()
 				   .setFooter({text:"shark-perms-manager copyright 2023 urmom reserved", iconURL: "https://cdn.discordapp.com/avatars/585121910388424724/47ceb1466c5bd0648487c784d394cbfd.webp"});
