@@ -13,5 +13,8 @@
   "license": "UNLICENCED",
   "bugs": {
     "url": "https://github.com/sharkpain/shark-perms/issues"
+  },
+  "dependencies": {
+    "discord.js": "^13.6.0"
   }
 }

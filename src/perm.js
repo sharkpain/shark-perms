@@ -1,29 +1,24 @@
+const { MessageEmbed } = require('discord.js');
 module.exports = {
     execute: function (message, args, util) {
-        /*
-        if search(msg, 'admin'):
-			if msg.author.id == 453924399402319882:
-				try:
-					datas['admins'][str(msg.author.guild.id)] = datas['admins'][str(msg.author.guild.id)]
-				except:
-					datas['admins'][str(msg.author.guild.id)] = []
-				if args[1] == 'add':
-					datas['admins'][str(msg.author.guild.id)].append(int(args[2]))
-					await save(datas, msg=msg)
-					await msg.channel.send('added ' + args[2] + ' to admin list')
-				if args[1] == 'remove':
-					datas['admins'][str(msg.author.guild.id)].remove(int(args[2]))
-					await save(datas, msg=msg)
-					await msg.channel.send('removed ' + args[2] + ' from admin list')
-				return
-        */
        const sharkdb = util.apis["shark-db-db"].api;
        const sperms = util.apis["shark-perms-manager"].api;
        switch(args[0]) {
 		   case 'myperms':
 			   sharkdb.getUser(message.author.id, user => {
-				   message.channel.send(JSON.stringify(user.permissions))
-			   })
+				   if (!user) return message.channel.send('try again');
+				   let permEmbed = new MessageEmbed()
+				   .setColor("#00A8F3")
+				   .setTitle(`${message.author.username}'s permissions`)
+				   .addFields(
+					   { name: 'Global Permissions', value: user.permissions.permissions.filter(p => p?.global).map(p => p.name).join(', ') },
+					   { name: 'Guild Permissions', value: user.permissions.permissions.filter(p => p?.guildOnly.includes(message.guild.id)).map(p => p.name).join(', ') },
+					   { name: 'Groups', value: user.permissions.groups.map(g => g?.name).join(', ') }
+				   )
+				   .setTimestamp()
+				   .setFooter({text:"shark-perms-manager copyright 2023 urmom reserved", iconURL: "https://cdn.discordapp.com/avatars/585121910388424724/47ceb1466c5bd0648487c784d394cbfd.webp"});
+					message.channel.send({embeds: [permEmbed]});
+				})
 			   break;
 			default:
 				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
