@@ -21,6 +21,18 @@ module.exports = {
 					})
 				});
 			   break;
+			case "whyperm":
+				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
+					if(!permitted) return message.channel.send("you not allowed idiot");
+					if(!args[1] || !args[2]) return message.channel.send("user id and permissions please, usage: perm whyperm [user id] [permission]");
+					if(!/^[0-9]{18,19}$/gm.test(args[1])) return message.channel.send("invalid user id >:(")
+					sperms.wpermittedTo(args[2], args[1], message.guild.id, permitted => {
+						if (!permitted) return message.channel.send("this person isnt allowed you idiot");
+						if (permitted == "ERR_NOUSER") return message.channel.send("user not found (probably hasnt used the bot before)");
+						message.channel.send(permitted);
+					})
+				});
+				break;
 			case 'setperm':
 				sperms.permittedTo("perm", message.author.id, message.guild.id, permitted => {
 					if(!permitted) return message.channel.send("you not allowed idiot");
@@ -98,6 +110,6 @@ module.exports = {
 					message.channel.send({embeds: [permEmbed]});
 				})
 				break;
-	   }
+	    }
     }
 }
