@@ -10,37 +10,37 @@ const pstates = Object.freeze({
 function permCheck(permId, discordId, guildId, cb) {
     //see howthefuckitworks.png for reference
     sharkdb.getUser(discordId, user => {
-        if (!user) return cb(pstates.MISSING);
+        if (!user) return cb(pstates.MISSING, null);
         let APerm = user.permissions.permissions.filter(p => p.id == "superhyperadmin")[0];
         if (APerm) {
-            if (APerm.global) return cb(pstates.ALLOW);
-            if (APerm.guildOnly.includes(guildId)) return cb(pstates.ALLOW);
+            if (APerm.global) return cb(pstates.ALLOW, user);
+            if (APerm.guildOnly.includes(guildId)) return cb(pstates.ALLOW, user);
         }
         let UPerm = user.permissions.permissions.filter(p => p.id == permId)[0]; // {id: permId, global: false/true, guildOnly: [123,123,563,1,23,123,141]}
         if (UPerm) {
-            if (UPerm.global) return cb(pstates.ALLOW);
-            if (UPerm.guildOnly.includes(guildId)) return cb(pstates.ALLOW);
+            if (UPerm.global) return cb(pstates.ALLOW, user);
+            if (UPerm.guildOnly.includes(guildId)) return cb(pstates.ALLOW, user);
         }
         let userGroups = user.permissions.groups; // {id: groupId, name: groupName}
-        if (userGroups.length < 1) return cb(pstates.DISALLOW);
+        if (userGroups.length < 1) return cb(pstates.DISALLOW, user);
         let ugi = userGroups.map(g => g.id);
         sharkdb.getGroups(ugi, groups => {
-            if (!groups) return cb(pstates.DISALLOW);
+            if (!groups) return cb(pstates.DISALLOW, user);
             let gp = false
             groups.forEach(group => {
                 let GPerm = group.permissions.filter(p => p.id == permId)[0];
                 if (GPerm) {
                     if (GPerm.global) {
                         gp = true
-                        return cb(pstates.ALLOW);
+                        return cb(pstates.ALLOW, user);
                     }
                     if (GPerm.guildOnly.includes(guildId)) {
                         gp = true
-                        return cb(pstates.ALLOW);
+                        return cb(pstates.ALLOW, user);
                     }
                 }
             })
-            if (!gp) return cb(pstates.DISALLOW)
+            if (!gp) return cb(pstates.DISALLOW, user)
         })
     })
 }
@@ -88,19 +88,19 @@ function wpermCheck(permId, discordId, guildId, cb) {
 }
 
 function permittedTo(permId, discordId, guildId, cb) {
-    permCheck(permId, discordId, guildId, pstate => {
+    permCheck(permId, discordId, guildId, (pstate, user) => {
         switch(pstate) {
             case pstates.ALLOW:
-                cb(true);
+                cb(true, user);
                 break;
             case pstates.DISALLOW:
-                cb(false);
+                cb(false, user);
                 break;
             case pstates.MISSING:
                 permittedTo(permId, discordId, guildId, cb);
                 break;
             default:
-                cb(false);
+                cb(false, user);
                 break;
         }
     })
